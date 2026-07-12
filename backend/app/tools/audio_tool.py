@@ -1,13 +1,13 @@
+import os
+from groq import Groq
+from app.utils.config import settings
 from app.agents.tool_registry import BaseTool
 from app.schemas.tool import ToolMetadata, ToolParameter
 from app.schemas.common import InputType
-import whisper
-import os
 
 class AudioTool(BaseTool):
     def __init__(self):
-        # We will lazy-load the model in execute() to prevent Render from running out of memory on startup
-        self.model = None
+        self.client = Groq(api_key=settings.GROQ_API_KEY)
 
     @property
     def metadata(self) -> ToolMetadata:
@@ -18,7 +18,7 @@ class AudioTool(BaseTool):
             required_parameters=[
                 ToolParameter(name="file_path", type="str", description="Path to the audio file.")
             ],
-            estimated_latency_sec=10
+            estimated_latency_sec=2
         )
 
     async def execute(self, file_path: str = None, **kwargs) -> dict:
@@ -32,18 +32,13 @@ class AudioTool(BaseTool):
         if not target_path or not os.path.exists(target_path):
             raise FileNotFoundError(f"Audio file not found at {target_path}")
             
-        if self.model is None:
-            import whisper
-            self.model = whisper.load_model("tiny")
+        # Use Groq's ultra-fast cloud Whisper API to save 150MB+ of local RAM!
+        with open(target_path, "rb") as file:
+            transcription = self.client.audio.transcriptions.create(
+                file=(os.path.basename(target_path), file.read()),
+                model="whisper-large-v3-turbo",
+            )
             
-        result = self.model.transcribe(target_path)
-        
-        # Free memory aggressively to survive Render's 512MB limit
-        del self.model
-        self.model = None
-        import gc
-        gc.collect()
-        
         return {
-            "transcript": result["text"]
+            "transcript": transcription.text
         }
