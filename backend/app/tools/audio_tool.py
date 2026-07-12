@@ -6,9 +6,8 @@ import os
 
 class AudioTool(BaseTool):
     def __init__(self):
-        # Load 'tiny' model by default for speed.
-        # In a real production setup, models should be loaded in a separate worker process.
-        self.model = whisper.load_model("tiny")
+        # We will lazy-load the model in execute() to prevent Render from running out of memory on startup
+        self.model = None
 
     @property
     def metadata(self) -> ToolMetadata:
@@ -32,6 +31,10 @@ class AudioTool(BaseTool):
                     
         if not target_path or not os.path.exists(target_path):
             raise FileNotFoundError(f"Audio file not found at {target_path}")
+            
+        if self.model is None:
+            import whisper
+            self.model = whisper.load_model("tiny")
             
         result = self.model.transcribe(target_path)
         return {

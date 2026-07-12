@@ -6,8 +6,8 @@ import os
 
 class OCRTool(BaseTool):
     def __init__(self):
-        # Initialize RapidOCR locally. This loads the ONNX models into memory.
-        self.engine = RapidOCR()
+        # Lazy load RapidOCR to prevent out-of-memory errors on free deployment tiers
+        self.engine = None
 
     @property
     def metadata(self) -> ToolMetadata:
@@ -31,6 +31,10 @@ class OCRTool(BaseTool):
                     
         if not target_path or not os.path.exists(target_path):
             raise FileNotFoundError(f"Image or PDF not found at {target_path}")
+            
+        if self.engine is None:
+            from rapidocr_onnxruntime import RapidOCR
+            self.engine = RapidOCR()
             
         result, _ = self.engine(target_path)
         if not result:
