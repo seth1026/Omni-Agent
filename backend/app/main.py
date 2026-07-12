@@ -51,6 +51,15 @@ async def health_check():
     """Simple health check endpoint."""
     return {"status": "ok", "environment": settings.ENVIRONMENT}
 
+@app.get("/", tags=["System"])
+async def root():
+    """Root endpoint to prevent 404 when clicking the Render URL directly."""
+    return {
+        "message": "OmniAgent API is running! 🚀", 
+        "docs": "Append /docs to the URL to view the Swagger API documentation.",
+        "status": "Healthy"
+    }
+
 # Include API Routers
 app.include_router(chat.router, prefix="/api")
 app.include_router(upload.router, prefix="/api")
