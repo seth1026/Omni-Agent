@@ -1,4 +1,4 @@
-# OmniAgent 🚀
+# OmniAgent 
 
 OmniAgent is a full-stack, multi-modal AI agent that can ingest almost anything you throw at it—text, images, PDFs, audio files, and even YouTube URLs. You can upload multiple files at once, and the agent will figure out exactly what you want, extract the content, and chain the right tools together to give you the answer.
 
