@@ -37,40 +37,10 @@ graph TD
 4. **Cross-Referencing**: If you upload a PDF that has a YouTube link inside it, the agent is smart enough to extract the text, find the link, and fetch the video transcript automatically!
 5. **Traceable UI**: The frontend includes a sidebar so you can see exactly which tools the agent decided to use and how fast they ran.
 
-## Getting Started
+## Live Demo
+Check out the live deployment here: **[https://omniagent-ui.onrender.com](https://omniagent-ui.onrender.com)**
 
-### Setting up the Environment
-First, create a `.env` file in the `/backend` directory and drop in your Groq API key:
-```
-GROQ_API_KEY=your_groq_api_key_here
-```
-
-### Running Locally (The Easy Way)
-Just use Docker! Make sure Docker Desktop is running, then run:
-```bash
-docker-compose up --build
-```
-This boots up everything you need:
-- Frontend: `http://localhost:5173`
-- Backend: `http://localhost:8000`
-
-### Running Locally (The Manual Way)
-
-**Backend:**
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
-
-**Frontend:**
-```bash
-cd frontend
-npm install
-npm run dev
-```
+*(Note: The backend is hosted on a free tier, so it might take 30-50 seconds to spin up on your first request!)*
 
 ## Design Choices I Made
 - **LLM Orchestration**: I used Groq because it's blisteringly fast. LLaMA-3.3-70B acts as the brain (the Planner), while the smaller LLaMA-3.1-8B models act as the workers inside the individual tools.
