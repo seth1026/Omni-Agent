@@ -1,0 +1,14 @@
+services:
+  backend:
+    build: 
+      context: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app:/app/app
+    env_file:
+      - ./backend/.env
+    environment:
+      - ENVIRONMENT=development
+
+  # Frontend will be added here in Phase 6
