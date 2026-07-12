@@ -13,8 +13,8 @@ class OCRTool(BaseTool):
     def metadata(self) -> ToolMetadata:
         return ToolMetadata(
             name="ocr_tool",
-            description="Extracts text from images or scanned PDFs using Optical Character Recognition.",
-            supported_inputs=[InputType.IMAGE, InputType.PDF],
+            description="Extracts text from image files (png, jpg, etc) using Optical Character Recognition. DO NOT use for PDFs.",
+            supported_inputs=[InputType.IMAGE],
             required_parameters=[
                 ToolParameter(name="file_path", type="str", description="Path to the image or PDF file.")
             ],
