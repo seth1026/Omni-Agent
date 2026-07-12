@@ -37,6 +37,13 @@ class AudioTool(BaseTool):
             self.model = whisper.load_model("tiny")
             
         result = self.model.transcribe(target_path)
+        
+        # Free memory aggressively to survive Render's 512MB limit
+        del self.model
+        self.model = None
+        import gc
+        gc.collect()
+        
         return {
             "transcript": result["text"]
         }

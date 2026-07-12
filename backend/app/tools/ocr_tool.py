@@ -37,6 +37,13 @@ class OCRTool(BaseTool):
             self.engine = RapidOCR()
             
         result, _ = self.engine(target_path)
+        
+        # Free memory aggressively to survive Render's 512MB limit
+        del self.engine
+        self.engine = None
+        import gc
+        gc.collect()
+        
         if not result:
             return {"extracted_text": "", "confidence": 0.0}
             
